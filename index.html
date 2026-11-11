@@ -181,7 +181,8 @@ useButton.addEventListener('click', async () => {
     document.getElementById('buttons').style.display = 'none';
     videoPanel.style.display = 'block';
     video.addEventListener('ended', () => {
-    document.getElementById('subheading').textContent = '愿我们都能带着理解和真诚，重新好好相处。';
+      document.getElementById('heading').textContent = '关系复原成功！';
+      document.getElementById('subheading').textContent = '愿我们都能带着理解和真诚，重新好好相处。';
       document.getElementById('sticker').textContent = '🩹💞';
     }, { once: true });
     try { await video.play(); } catch (e) {
@@ -195,4 +196,3 @@ useButton.addEventListener('click', async () => {
 </script>
 </body>
 </html>
-      
