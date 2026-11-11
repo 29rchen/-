@@ -173,20 +173,26 @@ card.classList.add('goodbye');
 laterMessage.style.display = 'block';
 });
 
-useButton.addEventListener('click', () => {
-if (hasStarted) return;
-hasStarted = true;
+useButton.addEventListener('click', async () => {
+    laterMessage.style.display = 'none';
+    document.getElementById('sticker').textContent = '💗';
+    document.getElementById('heading').textContent = '关系复原中……';
+    document.getElementById('subheading').textContent = '希望这一次，我们都能好好珍惜彼此。';
+    document.getElementById('buttons').style.display = 'none';
+    videoPanel.style.display = 'block';
+    video.addEventListener('ended', () => {
+    document.getElementById('subheading').textContent = '愿我们都能带着理解和真诚，重新好好相处。';
+      document.getElementById('sticker').textContent = '🩹💞';
+    }, { once: true });
+    try { await video.play(); } catch (e) {
+      // If autoplay is blocked, the visible video controls let the user start it.
+    }
+  });
 
-heading.textContent = '关系复原中……';
-subheading.textContent = '希望这一次，我们都能好好珍惜彼此。';
-
-buttons.style.display = 'none';
-laterMessage.style.display = 'none';
-card.classList.remove('waiting');
-
-videoPanel.style.display = 'block';
-});
+  laterButton.addEventListener('click', () => {
+    laterMessage.style.display = 'block';
+  });
 </script>
-
 </body>
 </html>
+      
