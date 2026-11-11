@@ -152,9 +152,7 @@ const subheading = document.getElementById('subheading');
 const buttons = document.getElementById('buttons');
 const useButton = document.getElementById('useButton');
 const laterButton = document.getElementById('laterButton');
-const laterMessage = document.getElementById('laterMessage');
 const videoPanel = document.getElementById('videoPanel');
-const repairVideo = document.getElementById('repairVideo');
 
 let hasDeclinedOnce = false;
 let hasStarted = false;
@@ -162,37 +160,33 @@ let hasStarted = false;
 laterButton.addEventListener('click', () => {
 if (hasStarted) return;
 
+// 第一次点击：只改变按钮大小，留在首页
 if (!hasDeclinedOnce) {
 hasDeclinedOnce = true;
 card.classList.add('waiting');
 return;
 }
 
-card.classList.remove('waiting');
-card.classList.add('goodbye');
-laterMessage.style.display = 'block';
+// 第二次点击：跳转到告别页面
+document.body.innerHTML = `
+<main class="card">
+<h1>没关系，什么时候想好了都可以再来</h1>
+</main>
+`;
 });
 
-useButton.addEventListener('click', async () => {
-    laterMessage.style.display = 'none';
-    document.getElementById('sticker').textContent = '💗';
-    document.getElementById('heading').textContent = '关系复原中……';
-    document.getElementById('subheading').textContent = '希望这一次，我们都能好好珍惜彼此。';
-    document.getElementById('buttons').style.display = 'none';
-    videoPanel.style.display = 'block';
-    video.addEventListener('ended', () => {
-      document.getElementById('heading').textContent = '关系复原成功！';
-      document.getElementById('subheading').textContent = '愿我们都能带着理解和真诚，重新好好相处。';
-      document.getElementById('sticker').textContent = '🩹💞';
-    }, { once: true });
-    try { await video.play(); } catch (e) {
-      // If autoplay is blocked, the visible video controls let the user start it.
-    }
-  });
+useButton.addEventListener('click', () => {
+if (hasStarted) return;
+hasStarted = true;
 
-  laterButton.addEventListener('click', () => {
-    laterMessage.style.display = 'block';
-  });
+heading.textContent = '关系复原中……';
+subheading.textContent = '希望这一次，我们都能好好珍惜彼此。';
+
+buttons.style.display = 'none';
+videoPanel.style.display = 'block';
+card.classList.remove('waiting');
+});
 </script>
+
 </body>
 </html>
