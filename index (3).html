@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffe8f1">
+<title>关系复原胶</title>
+<style>
+*{box-sizing:border-box}
+:root{--plum:#793d60;--rose:#ff6f9f;--soft:#bd7e9c}
+body{margin:0;min-height:100vh;padding:28px 14px 54px;display:flex;justify-content:center;align-items:center;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:var(--plum);overflow-x:hidden;background:radial-gradient(ellipse at 50% 12%,#fffaff 0%,#ffeff6 43%,#ffd9e9 100%)}
+body:before,body:after{content:"♡";position:fixed;z-index:0;color:#ff9fc1;opacity:.25;font-size:130px;pointer-events:none}
+body:before{top:4%;left:3%;transform:rotate(-18deg)}body:after{right:3%;bottom:4%;transform:rotate(18deg)}
+.page{width:min(100%,620px);display:flex;flex-direction:column;gap:18px;position:relative;z-index:1}
+.panel{position:relative;text-align:center;padding:23px 22px 43px;border-radius:34px;background:linear-gradient(145deg,rgba(255,255,255,.93),rgba(255,245,250,.86));border:2px solid rgba(255,255,255,.96);box-shadow:0 18px 48px rgba(190,91,125,.17),inset 0 0 32px rgba(255,255,255,.8);overflow:hidden}
+.sparkles{position:absolute;inset:0;pointer-events:none}
+.sparkles span{position:absolute;color:#ff9fbe;opacity:.68;animation:twinkle 2.8s ease-in-out infinite}
+.sparkles span:nth-child(1){top:10%;left:7%;font-size:25px}.sparkles span:nth-child(2){top:17%;right:8%;font-size:20px;animation-delay:.8s}.sparkles span:nth-child(3){top:43%;left:4%;font-size:17px;animation-delay:1.3s}.sparkles span:nth-child(4){top:55%;right:5%;font-size:25px;animation-delay:.4s}
+@keyframes twinkle{0%,100%{opacity:.35;transform:scale(.85) rotate(-8deg)}50%{opacity:.95;transform:scale(1.12) rotate(8deg)}}
+.mascot-wrap{height:145px;display:grid;place-items:center;margin:-2px 0 0}
+.mascot{width:min(70%,300px);height:143px;object-fit:contain;filter:drop-shadow(0 8px 8px rgba(155,85,65,.15));animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-7px) rotate(1deg)}}
+h1{font-size:clamp(27px,6vw,37px);line-height:1.28;margin:4px 0 10px;color:#813e62;letter-spacing:1px}
+.subtitle{color:#b77b99;line-height:1.8;margin:0 0 20px;font-size:clamp(14px,3.5vw,17px)}
+.buttons{display:flex;justify-content:center;align-items:center;gap:12px;min-height:70px;flex-wrap:nowrap}
+button{border:0;border-radius:999px;padding:15px 18px;font-size:clamp(14px,3.5vw,18px);font-weight:750;cursor:pointer;white-space:nowrap;transition:transform .48s cubic-bezier(.2,.8,.2,1),box-shadow .4s,opacity .4s}
+#use{flex:1 1 58%;max-width:330px;color:white;background:linear-gradient(135deg,#ff91b8,#ff6098);box-shadow:0 9px 22px #ff8eb966,inset 0 2px 2px #ffffffb5;border:2px solid #ffd6e5}
+#later{flex:0 1 34%;color:#91627d;background:linear-gradient(135deg,#fff4f9,#f5dfeb);box-shadow:inset 0 0 0 1.5px #f1d4e2,0 5px 13px #d99ab51c}
+.intro-panel.waiting #use{transform:scale(1.13);box-shadow:0 12px 28px #ff79aa88,inset 0 2px 2px #ffffffc9}
+.intro-panel.waiting #later{transform:scale(.76);opacity:.76}
+#laterMessage{display:none;margin:20px auto 0;max-width:470px;padding:16px;border-radius:999px;color:#a45e80;background:linear-gradient(100deg,#ffe0ed,#ffd5e7);font-weight:700;font-size:clamp(16px,4vw,21px);line-height:1.6;animation:fadeIn .5s ease both}
+.intro-panel.goodbye .mascot-wrap,.intro-panel.goodbye #heading,.intro-panel.goodbye #subheading,.intro-panel.goodbye #buttons{display:none}
+.intro-panel.goodbye #laterMessage{display:block;margin-top:30px;padding:28px 18px}
+.repair-panel{display:none;padding:19px 17px 24px}
+.video-heading{display:flex;justify-content:center;align-items:center;gap:12px;margin:0 auto 14px}
+.video-heading img{width:92px;height:78px;object-fit:contain}
+.video-title{font-size:clamp(20px,4.5vw,26px);font-weight:800;color:#874568;margin:0 0 4px}
+.video-sub{color:#b07896;font-size:14px;margin:0;line-height:1.6}
+video{display:block;width:100%;border-radius:18px;background:#171522;box-shadow:0 5px 16px #d98eae55}
+.success{display:none;margin:18px auto 0;padding:12px 8px 0;animation:fadeIn .7s ease both}
+.success img{width:120px;height:96px;object-fit:contain;vertical-align:middle}
+.success h2{display:inline-block;vertical-align:middle;margin:0;color:#843f63;font-size:clamp(24px,5vw,32px)}
+.success p{color:#b07896;margin:7px 0 0;line-height:1.7}
+.tiny{font-size:12px;margin:20px 0 0;color:#c18ba5;letter-spacing:1px}
+.date-mark,.corner-mark{position:absolute;bottom:9px;color:#e49bb8;user-select:none}
+.date-mark{left:14px;font-size:11px;opacity:.78;letter-spacing:.5px}.corner-mark{right:14px;font-size:14px;opacity:.82;letter-spacing:1px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:430px){body{padding:18px 10px 34px}.panel{padding:19px 13px 42px;border-radius:29px}.mascot-wrap{height:130px}.mascot{height:128px}.buttons{gap:8px}button{padding:13px 9px}.video-heading img{width:76px;height:68px}.tiny{font-size:10px;letter-spacing:.3px}}
+</style>
+</head>
+<body>
+<main class="page">
+  <section class="panel intro-panel" id="introPanel">
+    <div class="sparkles" aria-hidden="true"><span>♡</span><span>♡</span><span>✧</span><span>♡</span></div>
+    <div class="mascot-wrap"><img class="mascot" src="bandage-sticker.png" alt="微笑的创可贴"></div>
+    <h1 id="heading">要使用关系复原胶吗？</h1>
+    <p class="subtitle" id="subheading">把小小的误会贴起来，给关系一个重新开始的机会。</p>
+    <div class="buttons" id="buttons">
+      <button id="use" type="button">使用关系复原胶 ♡</button>
+      <button id="later" type="button">暂时不用</button>
+    </div>
+    <div id="laterMessage">没关系，什么时候想好了都可以再来。🌷</div>
+    <span class="date-mark" aria-hidden="true">2025.02.11</span>
+    <span class="corner-mark" aria-hidden="true">？！</span>
+  </section>
+
+  <section class="panel repair-panel" id="repairPanel">
+    <div class="sparkles" aria-hidden="true"><span>♡</span><span>♡</span><span>✧</span><span>♡</span></div>
+    <div class="video-heading">
+      <img src="bandage-sticker.png" alt="创可贴">
+      <div><p class="video-title" id="videoTitle">关系复原中……</p><p class="video-sub">希望这一次，我们都能好好珍惜彼此。</p></div>
+    </div>
+    <video id="repairVideo" controls playsinline preload="metadata">
+      <source src="relationship-repair-video.mp4" type="video/mp4">
+      你的浏览器暂不支持播放视频。
+    </video>
+    <div class="success" id="success" aria-live="polite">
+      <img src="bandage-sticker.png" alt="微笑的创可贴">
+      <h2>关系复原成功！♡</h2>
+      <p>愿我们都能带着理解和真诚，重新好好相处。</p>
+    </div>
+    <p class="tiny">— 一支关系复原胶 · 一点点耐心 · 一次真诚的沟通 —</p>
+    <span class="date-mark" aria-hidden="true">2025.02.11</span>
+    <span class="corner-mark" aria-hidden="true">？！</span>
+  </section>
+</main>
+<script>
+const introPanel=document.getElementById('introPanel');
+const repairPanel=document.getElementById('repairPanel');
+const useButton=document.getElementById('use');
+const laterButton=document.getElementById('later');
+const video=document.getElementById('repairVideo');
+const success=document.getElementById('success');
+let hasDeclinedOnce=false;
+let hasStarted=false;
+let finished=false;
+
+laterButton.addEventListener('click',()=>{
+  if(hasStarted)return;
+  if(!hasDeclinedOnce){
+    hasDeclinedOnce=true;
+    introPanel.classList.add('waiting');
+    return;
+  }
+  introPanel.classList.remove('waiting');
+  introPanel.classList.add('goodbye');
+  document.getElementById('laterMessage').style.display='block';
+});
+
+function showSuccess(){
+  if(finished)return;
+  finished=true;
+  document.getElementById('videoTitle').textContent='关系复原完成！';
+  success.style.display='block';
+  // Keep the completed video visible above the success message, matching the reference layout.
+}
+video.addEventListener('ended',showSuccess);
+
+useButton.addEventListener('click',async()=>{
+  if(hasStarted)return;
+  hasStarted=true;
+  introPanel.classList.remove('waiting','goodbye');
+  document.getElementById('laterMessage').style.display='none';
+  document.getElementById('buttons').style.display='none';
+  document.getElementById('heading').textContent='关系复原中……';
+  document.getElementById('subheading').textContent='希望这一次，我们都能好好珍惜彼此。';
+  repairPanel.style.display='block';
+  video.load();
+  try{
+    await video.play();
+  }catch(error){
+    // 若浏览器阻止自动播放，视频播放器仍会显示，用户可点击播放。
+  }
+});
+</script>
+</body>
+</html>
